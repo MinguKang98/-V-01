@@ -76,7 +76,7 @@
     </div>
 
     <div>
-        <button type="button" onclick="location.href='list.jsp'">목록</button>
+        <button type="button" onclick="location.href='/_V_01_war_exploded/board/list.jsp'">목록</button>
         <button>수정</button>
         <button>삭제</button>
     </div>

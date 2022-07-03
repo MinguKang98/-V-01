@@ -110,7 +110,7 @@
     <!--페이징징징-->
 
     <div>
-        <button>등록</button>
+        <button type="button" onclick="location.href='/_V_01_war_exploded/board/write.jsp'">등록</button>
     </div>
     <%
         rs.close();
