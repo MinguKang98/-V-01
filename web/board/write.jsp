@@ -22,12 +22,12 @@
     <title>게시판 등록</title>
 </head>
 <body>
-    <form method="post">
+    <form method="post" id="write_form" action="/_V_01_war_exploded/board/process.jsp">
         <table>
             <tr>
                 <th>카테고리</th>
                 <td>
-                    <select>
+                    <select name="category">
                         <option value="0" selected>카테고리 선택</option>
                         <%
                             sql = "select * from category";
@@ -48,34 +48,34 @@
             <tr>
                 <th>작성자</th>
                 <td>
-                    <input type="text">
+                    <input type="text" name="user" id="title">
                 </td>
             </tr>
             <tr>
                 <th>비밀번호</th>
                 <td>
-                    <input type="text" placeholder="비밀번호">
-                    <input type="text" placeholder="비밀번호 확인">
+                    <input type="text" name="password" placeholder="비밀번호">
+                    <input type="text" name="password_check" placeholder="비밀번호 확인">
                 </td>
             </tr>
             <tr>
                 <th>제목</th>
                 <td>
-                    <input type="text">
+                    <input type="text" name="title">
                 </td>
             </tr>
             <tr>
                 <th>내용</th>
                 <td>
-                    <input type="text">
+                    <input type="text" name="content">
                 </td>
             </tr>
             <tr>
                 <th>파일첨부</th>
                 <td>
-                    <input type="file" placeholder="">
-                    <input type="file">
-                    <input type="file">
+                    <input type="file" name="file1">
+                    <input type="file" name="file2">
+                    <input type="file" name="file3">
                 </td>
             </tr>
         </table>
@@ -83,5 +83,9 @@
         <button type="submit">저장</button>
     </form>
 
+    <script>
+        <!-- 유효성 검사 -->
+
+    </script>
 </body>
 </html>
