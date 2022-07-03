@@ -8,13 +8,4 @@
         <welcome-file>/board/list.jsp</welcome-file>
     </welcome-file-list>
 
-    <!-- url mapping -->
-    <servlet>
-        <servlet-name>list-jsp</servlet-name>
-        <jsp-file>/board/list.jsp</jsp-file>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>list-jsp</servlet-name>
-        <url-pattern>/board/list</url-pattern>
-    </servlet-mapping>
 </web-app>

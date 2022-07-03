@@ -83,6 +83,7 @@
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
         while (rs.next()) {
+            int board_id = rs.getInt("board_id");
             int category_id = rs.getInt("category_id");
             boolean fileExist = rs.getBoolean("file_exist");
             String title = rs.getString("title");
@@ -94,7 +95,7 @@
         <tr>
             <td><%=categoryMap.get(category_id)%></td>
             <td><%=fileExist%></td>
-            <td><%=title%></td>
+            <td><a href="/board/view.jsp?board_id=<%=board_id%>"><%=title%></a></td>
             <td><%=user%></td>
             <td><%=count%></td>
             <td><%=created_date%></td>
