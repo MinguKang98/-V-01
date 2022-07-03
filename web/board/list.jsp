@@ -95,7 +95,7 @@
         <tr>
             <td><%=categoryMap.get(category_id)%></td>
             <td><%=fileExist%></td>
-            <td><a href="/board/view.jsp?board_id=<%=board_id%>"><%=title%></a></td>
+            <td><a href="/_V_01_war_exploded/board/view.jsp?board_id=<%=board_id%>"><%=title%></a></td>
             <td><%=user%></td>
             <td><%=count%></td>
             <td><%=created_date%></td>
