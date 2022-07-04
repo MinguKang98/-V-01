@@ -50,7 +50,7 @@
         <tr>
             <th>작성자</th>
             <td>
-                <input type="text" name="user" id="user" required minlength="3" maxlength="5">
+                <input type="text" name="user" id="user" required minlength="3" maxlength="5"/>
                 <span id="userWarning"></span>
             </td>
         </tr>
@@ -58,15 +58,15 @@
             <th>비밀번호</th>
             <td>
                 <input type="password" name="password" id="password" placeholder="비밀번호" required
-                       pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{4,15}$">
-                <input type="password" name="passwordCheck" id="passwordCheck" placeholder="비밀번호 확인" required>
+                       pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{4,15}$"/>
+                <input type="password" name="passwordCheck" id="passwordCheck" placeholder="비밀번호 확인" required/>
                 <span id="passwordWarning"></span>
             </td>
         </tr>
         <tr>
             <th>제목</th>
             <td>
-                <input type="text" name="title" id="title" required minlength="4" maxlength="100">
+                <input type="text" name="title" id="title" required minlength="4" maxlength="100"/>
                 <span id="titleWarning"></span>
             </td>
         </tr>
@@ -80,9 +80,9 @@
         <tr>
             <th>파일첨부</th>
             <td>
-                <input type="file" name="file1" id="file1">
-                <input type="file" name="file2" id="file2">
-                <input type="file" name="file3" id="file3">
+                <input type="file" name="file1" id="file1"/>
+                <input type="file" name="file2" id="file2"/>
+                <input type="file" name="file3" id="file3"/>
             </td>
         </tr>
     </table>
