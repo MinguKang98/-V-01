@@ -10,7 +10,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%
     request.setCharacterEncoding("UTF-8");
-    String board_id = request.getParameter("board_id");
+    String boardId = request.getParameter("board_id");
 
     Connection con = null;
     PreparedStatement pstmt = null;
@@ -20,7 +20,7 @@
     Class.forName("org.mariadb.jdbc.Driver");
     con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
 
-    sql = "select * from board where board.board_id = "+board_id;
+    sql = "select * from board where board.board_id = "+boardId;
     pstmt = con.prepareStatement(sql);
     rs = pstmt.executeQuery();
     rs.next();
@@ -80,7 +80,7 @@
 
     <div>
         <button type="button" onclick="location.href='/_V_01_war_exploded/board/list.jsp'">목록</button>
-        <button>수정</button>
+        <button type="button" onclick="location.href='/_V_01_war_exploded/board/modify.jsp?board_id=<%=boardId%>'">수정</button>
         <button>삭제</button>
     </div>
 </body>
