@@ -32,7 +32,10 @@
     String user = rs.getString("user");
     int count = rs.getInt("count");
     String createdDate = dateFormat.format(rs.getTimestamp("created_date"));
-    String updatedDate = dateFormat.format(rs.getTimestamp("updated_date"));
+    String updatedDate = "-";
+    if (rs.getTimestamp("updated_date") != null) {
+        updatedDate = dateFormat.format(rs.getTimestamp("updated_date"));
+    }
     String content = rs.getString("content");
 
     sql = "select name FROM category where category_id = " + categoryId;

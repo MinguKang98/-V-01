@@ -22,7 +22,7 @@
     <title>게시판 등록</title>
 </head>
 <body>
-<form method="post" name="writeForm" id="writeForm" action="/_V_01_war_exploded/board/process.jsp">
+<form method="post" name="writeForm" id="writeForm" action="/_V_01_war_exploded/board/writeProcess.jsp">
     <table>
         <tr>
             <th>카테고리</th>

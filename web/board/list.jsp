@@ -89,8 +89,11 @@
             String title = rs.getString("title");
             String user = rs.getString("user");
             int count = rs.getInt("count");
-            String created_date = dateFormat.format(rs.getTimestamp("created_date"));
-            String updated_date = dateFormat.format(rs.getTimestamp("updated_date"));
+            String createdDate = dateFormat.format(rs.getTimestamp("created_date"));
+            String updatedDate = "-";
+            if (rs.getTimestamp("updated_date") != null) {
+                updatedDate = dateFormat.format(rs.getTimestamp("updated_date"));
+            }
     %>
         <tr>
             <td><%=categoryMap.get(category_id)%></td>
@@ -98,8 +101,8 @@
             <td><a href="/_V_01_war_exploded/board/view.jsp?board_id=<%=board_id%>"><%=title%></a></td>
             <td><%=user%></td>
             <td><%=count%></td>
-            <td><%=created_date%></td>
-            <td><%=updated_date%></td>
+            <td><%=createdDate%></td>
+            <td><%=updatedDate%></td>
         </tr>
     <%
         }
