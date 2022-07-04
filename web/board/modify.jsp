@@ -30,6 +30,7 @@
     boolean fileExist = rs.getBoolean("file_exist");
     String title = rs.getString("title");
     String user = rs.getString("user");
+    String password = rs.getString("password");
     int count = rs.getInt("count");
     String createdDate = dateFormat.format(rs.getTimestamp("created_date"));
     String updatedDate = "-";
@@ -50,7 +51,7 @@
     <title>게시판 수정</title>
 </head>
 <body>
-<form method="post" name="writeForm" id="writeForm" action="/_V_01_war_exploded/board/writeProcess.jsp">
+<form method="post" name="modifyForm" id="modifyForm" action="/_V_01_war_exploded/board/modifyProcess.jsp?board_id=<%=boardId%>">
     <table>
         <tr>
             <th>카테고리</th>
@@ -118,7 +119,61 @@
 </form>
 
 <script>
+    function validCheck() {
+        var user = document.getElementById("user");
+        var password = document.getElementById("password");
+        var title = document.getElementById("title");
+        var content = document.getElementById("content");
 
+        // 작성자 검증
+        var userWarning = document.getElementById("userWarning");
+        if (user.value.length >= user.minLength && user.value.length < user.maxLength) {
+            userWarning.innerText = "";
+        }
+        else{
+            userWarning.innerText = "3글자 이상, 5글자 미만";
+            userWarning.style.color = "red";
+            user.focus();
+            return false;
+        }
+
+        // 비밀번호 일치 검증
+        var passwordWarning = document.getElementById("passwordWarning");
+        if (password.value == "<%=password%>") {
+            passwordWarning.innerText = "";
+        } else {
+            passwordWarning.innerText = "비밀번호가 일치하지 않습니다.";
+            passwordWarning.style.color = "red";
+            password.focus();
+            return false;
+        }
+
+        // 제목 검증
+        var titleWarning = document.getElementById("titleWarning");
+        if (title.value.length >= title.minLength && title.value.length < title.maxLength) {
+            titleWarning.innerText = "";
+        }
+        else{
+            titleWarning.innerText = "4글자 이상, 100글자 미만";
+            titleWarning.style.color = "red";
+            title.focus();
+            return false;
+        }
+
+        // 내용 검증
+        var contentWarning = document.getElementById("contentWarning");
+        if (content.value.length >= content.minLength && content.value.length < content.maxLength) {
+            contentWarning.innerText = "";
+        }
+        else{
+            contentWarning.innerText = "4글자 이상, 2000글자 미만";
+            contentWarning.style.color = "red";
+            content.focus();
+            return false;
+        }
+
+        document.modifyForm.submit();
+    }
 </script>
 </body>
 </html>
