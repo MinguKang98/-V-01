@@ -11,13 +11,15 @@
     request.setCharacterEncoding("UTF-8");
     String boardId = request.getParameter("board_id");
     String type = request.getParameter("type");
+    String confirm = request.getParameter("confirm");
 %>
 <html>
 <head>
     <title>비밀번호 확인</title>
 </head>
 <body>
-<form method="post" name="passwordConfirmForm" id="passwordConfirmForm">
+<form method="post" name="passwordConfirmForm" id="passwordConfirmForm"
+      action="/_V_01_war_exploded/board/passwordConfirmProcess.jsp?board_id=<%=boardId%>&type=<%=type%>">
     <table>
         <tr>
             <th>비밀번호</th>
@@ -29,14 +31,14 @@
     </table>
 
     <button type="button" onclick="location.href='/_V_01_war_exploded/board/view.jsp?board_id=<%=boardId%>'">취소</button>
-    <button type="button" onclick="validCheck()">저장</button>
+    <button type="submit">저장</button>
 </form>
 
 <script>
-    //action="/_V_01_war_exploded/board/modifyProcess.jsp?board_id=<%=boardId%>
-    function validCheck() {
-
+    if("<%=confirm%>"=="fail"){
+        alert("비밀번호가 일치하지 않습니다.");
     }
+
 </script>
 </body>
 </html>
