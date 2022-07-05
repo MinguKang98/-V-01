@@ -49,17 +49,12 @@
     boolean titleChanged = (!title.equals(originTitle));
     boolean contentChanged = (!content.equals(originContent));
 
-    String useruseruser = (userChanged) ? ("user = \"" + user + "\", ") : "";
-    String titletitle = (titleChanged) ? ("title = \"" + title + "\", ") : "";
-    String contentcontent = (contentChanged) ? ("content = \"" + content + "\", ") : "";
-
-
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    String updatedDate = dateFormat.format(new Timestamp(System.currentTimeMillis()));
-    String updateupdate = "updated_date = \"" + updatedDate + "\" ";
+    String userUpdateQuery = (userChanged) ? ("user = \"" + user + "\", ") : "";
+    String titleUpdateQuery = (titleChanged) ? ("title = \"" + title + "\", ") : "";
+    String contentUpdateQuery = (contentChanged) ? ("content = \"" + content + "\", ") : "";
 
     //board update
-    sql = "update board set " + useruseruser + titletitle + contentcontent + updateupdate +
+    sql = "update board set " + userUpdateQuery + titleUpdateQuery + contentUpdateQuery + "updated_date = now() " +
             "where board_id = " + boardId;
 
     pstmt = con.prepareStatement(sql);
