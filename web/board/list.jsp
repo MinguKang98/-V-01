@@ -30,13 +30,16 @@
     con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
 %>
 <div>
-    <form method="get" name="searchForm" id="searchForm" action="/_V_01_war_exploded/board/list.jsp">
+    <a href="list.jsp">Home</a>
+</div>
+<div>
+    <form method="get" name="searchForm" id="searchForm" action="list.jsp">
         <label>등록일</label>
         <input type="date" name="searchCreatedDateFrom" id="searchCreatedDateFrom"/>
         <label> ~ </label>
         <input type="date" name="searchCreatedDateTo" id="searchCreatedDateTo"/>
         <select name="searchCategory" id="searchCategory">
-            <option value="0" id="category0">전체 카테고리</option>
+            <option value="0">전체 카테고리</option>
             <%
                 sql = "select * from category";
                 pstmt = con.prepareStatement(sql);
@@ -48,7 +51,7 @@
                     String name = rs.getString("name");
                     categoryMap.put(id, name);
             %>
-            <option value="<%=id%>" id="category<%=id%>"><%=name%>
+            <option value="<%=id%>"><%=name%>
             </option>
             <%
                 }
@@ -84,7 +87,7 @@
     <tbody>
     <%!
         public boolean isNullOrEmpty(String str) {
-            return (str == null || str.equals(""));
+            return (str == null || str.equals("") || str.equals("null"));
         }
     %>
     <%
@@ -130,7 +133,7 @@
         </td>
         <td><%=fileExist%>
         </td>
-        <td><a href="/_V_01_war_exploded/board/view.jsp?board_id=<%=board_id%>"><%=title%>
+        <td><a href="view.jsp?board_id=<%=board_id%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>"><%=title%>
         </a></td>
         <td><%=user%>
         </td>
@@ -150,7 +153,7 @@
 <!--페이징징징-->
 
 <div>
-    <button type="button" onclick="location.href='/_V_01_war_exploded/board/write.jsp'">등록</button>
+    <button type="button" onclick="location.href='write.jsp?searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>'">등록</button>
 </div>
 <%
     rs.close();
