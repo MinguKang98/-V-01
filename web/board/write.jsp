@@ -9,6 +9,12 @@
 <%@ page import="java.sql.*" %>
 
 <%
+    request.setCharacterEncoding("UTF-8");
+    String searchCreatedDateFrom = request.getParameter("searchCreatedDateFrom");
+    String searchCreatedDateTo = request.getParameter("searchCreatedDateTo");
+    String searchCategoryId = request.getParameter("searchCategory");
+    String searchText = request.getParameter("searchText");
+
     Connection con = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
@@ -22,7 +28,7 @@
     <title>게시판 등록</title>
 </head>
 <body>
-<form method="post" name="writeForm" id="writeForm" action="/_V_01_war_exploded/board/writeProcess.jsp">
+<form method="post" name="writeForm" id="writeForm" action="writeProcess.jsp">
     <table>
         <tr>
             <th>카테고리</th>
@@ -86,7 +92,7 @@
             </td>
         </tr>
     </table>
-    <button type="button" onclick="location.href='/_V_01_war_exploded/board/list.jsp'">취소</button>
+    <button type="button" onclick="location.href='list.jsp?searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>'">취소</button>
     <button type="button" onclick="validCheck()">저장</button>
 </form>
 
