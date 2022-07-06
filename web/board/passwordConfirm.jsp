@@ -31,7 +31,7 @@
     </table>
 
     <button type="button" onclick="location.href='/_V_01_war_exploded/board/view.jsp?board_id=<%=boardId%>'">취소</button>
-    <button type="submit">저장</button>
+    <button type="submit">확인</button>
 </form>
 
 <script>

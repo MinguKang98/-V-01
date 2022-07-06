@@ -30,7 +30,6 @@
     boolean fileExist = rs.getBoolean("file_exist");
     String title = rs.getString("title");
     String user = rs.getString("user");
-    String password = rs.getString("password");
     int visitCount = rs.getInt("visit_count");
     String createdDate = dateFormat.format(rs.getTimestamp("created_date"));
     String updatedDate = "-";
@@ -121,7 +120,6 @@
 <script>
     function validCheck() {
         var user = document.getElementById("user");
-        var password = document.getElementById("password");
         var title = document.getElementById("title");
         var content = document.getElementById("content");
 
@@ -134,17 +132,6 @@
             userWarning.innerText = "3글자 이상, 5글자 미만";
             userWarning.style.color = "red";
             user.focus();
-            return false;
-        }
-
-        // 비밀번호 일치 검증
-        var passwordWarning = document.getElementById("passwordWarning");
-        if (password.value == "<%=password%>") {
-            passwordWarning.innerText = "";
-        } else {
-            passwordWarning.innerText = "비밀번호가 일치하지 않습니다.";
-            passwordWarning.style.color = "red";
-            password.focus();
             return false;
         }
 

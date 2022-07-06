@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.sql.*" %>
+<%@ page import="java.util.regex.Pattern" %>
 
 <%
     request.setCharacterEncoding("UTF-8");
@@ -44,11 +45,12 @@
         response.sendRedirect("write.jsp");
         return;
     }
-//    else{
-//        if(false) {
-//
-//        }
-//    }
+    else{
+        if(!Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{4,15}$",password)) {
+            response.sendRedirect("write.jsp");
+            return;
+        }
+    }
 
     // 제목
     if (title.length() < 4 || title.length() >= 100) {
@@ -93,6 +95,5 @@
 
     // redirect
     response.sendRedirect("list.jsp");
-
 %>
 
