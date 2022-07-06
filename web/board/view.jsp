@@ -11,6 +11,10 @@
 <%
     request.setCharacterEncoding("UTF-8");
     String boardId = request.getParameter("board_id");
+    String searchCreatedDateFrom = request.getParameter("searchCreatedDateFrom");
+    String searchCreatedDateTo = request.getParameter("searchCreatedDateTo");
+    String searchCategoryId = request.getParameter("searchCategory");
+    String searchText = request.getParameter("searchText");
 
     Connection con = null;
     PreparedStatement pstmt = null;
@@ -79,9 +83,9 @@
     </div>
 
     <div>
-        <button type="button" onclick="location.href='/_V_01_war_exploded/board/list.jsp'">목록</button>
-        <button type="button" onclick="location.href='/_V_01_war_exploded/board/passwordConfirm.jsp?board_id=<%=boardId%>&type=modify'">수정</button>
-        <button type="button" onclick="location.href='/_V_01_war_exploded/board/passwordConfirm.jsp?board_id=<%=boardId%>&type=delete'">삭제</button>
+        <button type="button" onclick="location.href='list.jsp?searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>'">목록</button>
+        <button type="button" onclick="location.href='passwordConfirm.jsp?board_id=<%=boardId%>&type=modify'">수정</button>
+        <button type="button" onclick="location.href='passwordConfirm.jsp?board_id=<%=boardId%>&type=delete'">삭제</button>
     </div>
 </body>
 </html>
