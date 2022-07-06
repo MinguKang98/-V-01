@@ -64,6 +64,6 @@
     //file update
 
     // redirect
-    response.sendRedirect("/_V_01_war_exploded/board/view.jsp?board_id="+boardId);
+    response.sendRedirect("view.jsp?board_id="+boardId);
 %>
 

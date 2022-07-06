@@ -33,15 +33,15 @@
     if (inputPassword.equals(originPassword)) {
         // 같으면 type 에 따라 다음 프로세스로
         if (type.equals("modify")) {
-            response.sendRedirect("/_V_01_war_exploded/board/modify.jsp?board_id=" + boardId);
+            response.sendRedirect("modify.jsp?board_id=" + boardId);
         }
 
         if (type.equals("delete")) {
-            response.sendRedirect("/_V_01_war_exploded/board/deleteProcess.jsp?board_id=" + boardId);
+            response.sendRedirect("deleteProcess.jsp?board_id=" + boardId);
         }
     }
     else{
         // 다르면 passwordConfirm 으로
-        response.sendRedirect("/_V_01_war_exploded/board/passwordConfirm.jsp?board_id=" + boardId + "&type=" + type + "&confirm=fail");
+        response.sendRedirect("passwordConfirm.jsp?board_id=" + boardId + "&type=" + type + "&confirm=fail");
     }
 %>

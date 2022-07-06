@@ -30,7 +30,7 @@
     con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
 %>
 <div>
-    <a href="list.jsp">Home</a>
+    <a href="/_V_01_war_exploded/board/list.jsp">Home</a>
 </div>
 <div>
     <form method="get" name="searchForm" id="searchForm" action="list.jsp">
@@ -140,7 +140,7 @@
         <td><%=fileExist%>
         </td>
         <td>
-            <a href="view.jsp?board_id=<%=boardId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>">
+            <a href="/_V_01_war_exploded/board/view.jsp?board_id=<%=boardId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>">
                 <%=title%> (<%=commentCount%>)
             </a></td>
         <td><%=user%>
@@ -162,7 +162,7 @@
 
 <div>
     <button type="button"
-            onclick="location.href='write.jsp?searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>'">
+            onclick="location.href='/_V_01_war_exploded/board/write.jsp?searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>'">
         등록
     </button>
 </div>

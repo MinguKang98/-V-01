@@ -100,7 +100,7 @@
         <%
             }
         %>
-        <form method="post" name="commentForm" id="commentForm" action="commentProcess.jsp?board_id=<%=boardId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>">
+        <form method="post" name="commentForm" id="commentForm" action="/_V_01_war_exploded/board/commentProcess.jsp?board_id=<%=boardId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>">
             <input type="text" name="comment" id="comment" required placeholder="댓글을 입력해 주세요."/>
             <button type="submit">등록</button>
         </form>

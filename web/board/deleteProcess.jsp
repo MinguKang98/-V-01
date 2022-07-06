@@ -26,5 +26,5 @@
     pstmt.executeUpdate();
 
     // redirect
-    response.sendRedirect("/_V_01_war_exploded/board/list.jsp");
+    response.sendRedirect("list.jsp");
 %>

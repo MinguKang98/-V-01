@@ -29,6 +29,37 @@
     String fileArray[] = {file1, file2, file3};
 
     // 유효성 검사
+    // 카테고리
+    if (categoryID.equals("0")) {
+        response.sendRedirect("write.jsp");
+        return;
+    }
+    // 작성자
+    if (user.length() < 3 || user.length() >= 5) {
+        response.sendRedirect("write.jsp");
+        return;
+    }
+    // 비밀번호
+    if (password.length() < 4 || password.length() >= 16) {
+        response.sendRedirect("write.jsp");
+        return;
+    }
+//    else{
+//        if(false) {
+//
+//        }
+//    }
+
+    // 제목
+    if (title.length() < 4 || title.length() >= 100) {
+        response.sendRedirect("write.jsp");
+        return;
+    }
+    // 내용
+    if (content.length() < 4 || content.length() >= 2000) {
+        response.sendRedirect("write.jsp");
+        return;
+    }
 
     // board DB 저장
     sql = "INSERT INTO board(created_date,user,password,title,content,category_id,file_exist)" +
@@ -61,7 +92,7 @@
     pstmt.close();
 
     // redirect
-    response.sendRedirect("/_V_01_war_exploded/board/list.jsp");
+    response.sendRedirect("list.jsp");
 
 %>
 
