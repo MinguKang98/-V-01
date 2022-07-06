@@ -47,10 +47,11 @@
     String originPassword = rs.getString("password");
     String originTitle = rs.getString("title");
     String originContent = rs.getString("content");
+    String salt = rs.getString("salt");
 
     //유효성 검사
     // 비밀번호 일치
-    String encryptPassword = SHA256.encryptSHA256(password); // 암호화한 입력 비밀번호
+    String encryptPassword = SHA256.encryptSHA256(password, salt); // 암호화한 입력 비밀번호
     if (!encryptPassword.equals(originPassword)) {
         response.sendRedirect("modify.jsp?board_id=" + boardId + "&searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo
                 + "&searchCategory=" + searchCategoryId + "&searchText=" + searchText);

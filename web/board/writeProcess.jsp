@@ -9,6 +9,7 @@
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.regex.Pattern" %>
 <%@ page import="encryption.SHA256" %>
+<%@ page import="encryption.Salt" %>
 
 <%
     request.setCharacterEncoding("UTF-8");
@@ -70,11 +71,12 @@
     }
 
     // 비밀번호 암호화
-    String encryptPassword = SHA256.encryptSHA256(password);
+    String salt = Salt.getSalt();
+    String encryptPassword = SHA256.encryptSHA256(password, salt);
 
     // board DB 저장
-    sql = "INSERT INTO board(created_date,user,password,title,content,category_id,file_exist)" +
-            "VALUES (?,?,?,?,?,?,?);";
+    sql = "INSERT INTO board(created_date,user,password,title,content,category_id,file_exist,salt)" +
+            "VALUES (?,?,?,?,?,?,?,?);";
     pstmt = con.prepareStatement(sql);
 
     Timestamp createDate = new Timestamp(System.currentTimeMillis());
@@ -93,6 +95,7 @@
         }
     }
     pstmt.setInt(7, fileExist);
+    pstmt.setString(8, salt);
 
     pstmt.executeUpdate();
 

@@ -30,13 +30,14 @@
     con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
 
 
-    sql = "select password from board where board.board_id = "+boardId;
+    sql = "select password, salt from board where board.board_id = "+boardId;
     pstmt = con.prepareStatement(sql);
     rs = pstmt.executeQuery();
     rs.next();
 
+    String salt = rs.getString("salt");
     String originPassword = rs.getString("password"); // DB 저장 비밀번호
-    String encryptPassword = SHA256.encryptSHA256(inputPassword); // 암호화한 입력 비밀번호
+    String encryptPassword = SHA256.encryptSHA256(inputPassword, salt); // 암호화한 입력 비밀번호
 
     if (encryptPassword.equals(originPassword)) {
         // 같으면 type 에 따라 다음 프로세스로
