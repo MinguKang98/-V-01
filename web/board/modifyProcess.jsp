@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.sql.*" %>
+<%@ page import="encryption.SHA256" %>
 
 <%
     request.setCharacterEncoding("UTF-8");
@@ -49,7 +50,8 @@
 
     //유효성 검사
     // 비밀번호 일치
-    if (!password.equals(originPassword)) {
+    String encryptPassword = SHA256.encryptSHA256(password); // 암호화한 입력 비밀번호
+    if (!encryptPassword.equals(originPassword)) {
         response.sendRedirect("modify.jsp?board_id=" + boardId + "&searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo
                 + "&searchCategory=" + searchCategoryId + "&searchText=" + searchText);
         return;

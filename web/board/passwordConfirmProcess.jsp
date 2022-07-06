@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.sql.*" %>
+<%@ page import="encryption.SHA256" %>
 
 <%
     request.setCharacterEncoding("UTF-8");
@@ -34,9 +35,10 @@
     rs = pstmt.executeQuery();
     rs.next();
 
-    String originPassword = rs.getString("password");
+    String originPassword = rs.getString("password"); // DB 저장 비밀번호
+    String encryptPassword = SHA256.encryptSHA256(inputPassword); // 암호화한 입력 비밀번호
 
-    if (inputPassword.equals(originPassword)) {
+    if (encryptPassword.equals(originPassword)) {
         // 같으면 type 에 따라 다음 프로세스로
         if (type.equals("modify")) {
             response.sendRedirect("modify.jsp?board_id=" + boardId

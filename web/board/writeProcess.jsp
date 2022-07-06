@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.regex.Pattern" %>
+<%@ page import="encryption.SHA256" %>
 
 <%
     request.setCharacterEncoding("UTF-8");
@@ -68,6 +69,9 @@
         return;
     }
 
+    // 비밀번호 암호화
+    String encryptPassword = SHA256.encryptSHA256(password);
+
     // board DB 저장
     sql = "INSERT INTO board(created_date,user,password,title,content,category_id,file_exist)" +
             "VALUES (?,?,?,?,?,?,?);";
@@ -76,7 +80,7 @@
     Timestamp createDate = new Timestamp(System.currentTimeMillis());
     pstmt.setTimestamp(1, createDate);
     pstmt.setString(2, user);
-    pstmt.setString(3, password); //비밀번호 암호화 해야함
+    pstmt.setString(3, encryptPassword);
     pstmt.setString(4, title);
     pstmt.setString(5, content);
     pstmt.setInt(6, Integer.parseInt(categoryID));
