@@ -95,7 +95,7 @@
 
         // 등록일 조건
         String searchDateQuery = (searchCreatedDateFromIsNullOrEmpty || searchCreatedDateToIsNullOrEmpty)
-                ? "" : String.format("where (created_date >= \"%s\" and created_date <= \"%s\")", searchCreatedDateFrom, searchCreatedDateTo);
+                ? "" : String.format("where (date(created_date) between \"%s\" and \"%s\")", searchCreatedDateFrom, searchCreatedDateTo);
 
         // 카테고리 조건
         String searchCategoryQuery = (searchCategoryIdIsNullOrEmpty || searchCategoryId.equals("0")) ?
