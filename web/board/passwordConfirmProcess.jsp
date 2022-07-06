@@ -14,6 +14,12 @@
     String type = request.getParameter("type");
     String inputPassword = request.getParameter("password");
 
+    // 이전 검색 조건
+    String searchCreatedDateFrom = request.getParameter("searchCreatedDateFrom");
+    String searchCreatedDateTo = request.getParameter("searchCreatedDateTo");
+    String searchCategoryId = request.getParameter("searchCategory");
+    String searchText = request.getParameter("searchText");
+
     Connection con = null;
     PreparedStatement pstmt = null;
     String sql = null;
@@ -33,15 +39,22 @@
     if (inputPassword.equals(originPassword)) {
         // 같으면 type 에 따라 다음 프로세스로
         if (type.equals("modify")) {
-            response.sendRedirect("modify.jsp?board_id=" + boardId);
+            response.sendRedirect("modify.jsp?board_id=" + boardId
+                    + "&searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo
+                    + "&searchCategory=" + searchCategoryId + "&searchText=" + searchText);
         }
 
         if (type.equals("delete")) {
-            response.sendRedirect("deleteProcess.jsp?board_id=" + boardId);
+            response.sendRedirect("deleteProcess.jsp?board_id=" + boardId
+                    + "&searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo
+                    + "&searchCategory=" + searchCategoryId + "&searchText=" + searchText);
         }
     }
     else{
         // 다르면 passwordConfirm 으로
-        response.sendRedirect("passwordConfirm.jsp?board_id=" + boardId + "&type=" + type + "&confirm=fail");
+        response.sendRedirect("passwordConfirm.jsp?board_id=" + boardId + "&type=" + type
+                + "&confirm=fail&searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo
+                + "&searchCategory=" + searchCategoryId + "&searchText=" + searchText);
+
     }
 %>

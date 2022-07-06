@@ -12,6 +12,12 @@
     String boardId = request.getParameter("board_id");
     String type = request.getParameter("type");
     String confirm = request.getParameter("confirm");
+
+    // 이전 검색 조건
+    String searchCreatedDateFrom = request.getParameter("searchCreatedDateFrom");
+    String searchCreatedDateTo = request.getParameter("searchCreatedDateTo");
+    String searchCategoryId = request.getParameter("searchCategory");
+    String searchText = request.getParameter("searchText");
 %>
 <html>
 <head>
@@ -19,7 +25,7 @@
 </head>
 <body>
 <form method="post" name="passwordConfirmForm" id="passwordConfirmForm"
-      action="/_V_01_war_exploded/board/passwordConfirmProcess.jsp?board_id=<%=boardId%>&type=<%=type%>">
+      action="/_V_01_war_exploded/board/passwordConfirmProcess.jsp?board_id=<%=boardId%>&type=<%=type%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>">
     <table>
         <tr>
             <th>비밀번호</th>
@@ -30,7 +36,7 @@
 
     </table>
 
-    <button type="button" onclick="location.href='/_V_01_war_exploded/board/view.jsp?board_id=<%=boardId%>'">취소</button>
+    <button type="button" onclick="location.href='/_V_01_war_exploded/board/view.jsp?board_id=<%=boardId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>'">취소</button>
     <button type="submit">확인</button>
 </form>
 

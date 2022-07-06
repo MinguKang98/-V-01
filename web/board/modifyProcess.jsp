@@ -7,11 +7,16 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.sql.*" %>
-<%@ page import="java.util.regex.Pattern" %>
 
 <%
     request.setCharacterEncoding("UTF-8");
     String boardId = request.getParameter("board_id");
+
+    // 이전 검색 조건
+    String searchCreatedDateFrom = request.getParameter("searchCreatedDateFrom");
+    String searchCreatedDateTo = request.getParameter("searchCreatedDateTo");
+    String searchCategoryId = request.getParameter("searchCategory");
+    String searchText = request.getParameter("searchText");
 
     Connection con = null;
     PreparedStatement pstmt = null;
@@ -45,23 +50,27 @@
     //유효성 검사
     // 비밀번호 일치
     if (!password.equals(originPassword)) {
-        response.sendRedirect("modify.jsp?board_id=" + boardId);
+        response.sendRedirect("modify.jsp?board_id=" + boardId + "&searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo
+                + "&searchCategory=" + searchCategoryId + "&searchText=" + searchText);
         return;
     }
 
     // 작성자
     if (user.length() < 3 || user.length() >= 5) {
-        response.sendRedirect("modify.jsp?board_id=" + boardId);
+        response.sendRedirect("modify.jsp?board_id=" + boardId + "&searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo
+                + "&searchCategory=" + searchCategoryId + "&searchText=" + searchText);
         return;
     }
     // 제목
     if (title.length() < 4 || title.length() >= 100) {
-        response.sendRedirect("modify.jsp?board_id=" + boardId);
+        response.sendRedirect("modify.jsp?board_id=" + boardId + "&searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo
+                + "&searchCategory=" + searchCategoryId + "&searchText=" + searchText);
         return;
     }
     // 내용
     if (content.length() < 4 || content.length() >= 2000) {
-        response.sendRedirect("modify.jsp?board_id=" + boardId);
+        response.sendRedirect("modify.jsp?board_id=" + boardId + "&searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo
+                + "&searchCategory=" + searchCategoryId + "&searchText=" + searchText);
         return;
     }
 
@@ -85,6 +94,7 @@
     //file update
 
     // redirect
-    response.sendRedirect("view.jsp?board_id=" + boardId);
+    response.sendRedirect("view.jsp?board_id=" + boardId + "&searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo
+            + "&searchCategory=" + searchCategoryId + "&searchText=" + searchText);
 %>
 

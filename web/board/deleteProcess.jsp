@@ -12,6 +12,12 @@
     request.setCharacterEncoding("UTF-8");
     String boardId = request.getParameter("board_id");
 
+    // 이전 검색 조건
+    String searchCreatedDateFrom = request.getParameter("searchCreatedDateFrom");
+    String searchCreatedDateTo = request.getParameter("searchCreatedDateTo");
+    String searchCategoryId = request.getParameter("searchCategory");
+    String searchText = request.getParameter("searchText");
+
     Connection con = null;
     PreparedStatement pstmt = null;
     String sql = null;
@@ -26,5 +32,7 @@
     pstmt.executeUpdate();
 
     // redirect
-    response.sendRedirect("list.jsp");
+    response.sendRedirect("list.jsp?searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo
+            + "&searchCategory=" + searchCategoryId + "&searchText=" + searchText);
+
 %>

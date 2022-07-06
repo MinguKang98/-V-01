@@ -12,6 +12,12 @@
     request.setCharacterEncoding("UTF-8");
     String boardId = request.getParameter("board_id");
 
+    // 이전 검색 조건
+    String searchCreatedDateFrom = request.getParameter("searchCreatedDateFrom");
+    String searchCreatedDateTo = request.getParameter("searchCreatedDateTo");
+    String searchCategoryId = request.getParameter("searchCategory");
+    String searchText = request.getParameter("searchText");
+
     Connection con = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
@@ -50,7 +56,7 @@
     <title>게시판 수정</title>
 </head>
 <body>
-<form method="post" name="modifyForm" id="modifyForm" action="/_V_01_war_exploded/board/modifyProcess.jsp?board_id=<%=boardId%>">
+<form method="post" name="modifyForm" id="modifyForm" action="/_V_01_war_exploded/board/modifyProcess.jsp?board_id=<%=boardId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>">
     <table>
         <tr>
             <th>카테고리</th>
@@ -113,7 +119,7 @@
             </td>
         </tr>
     </table>
-    <button type="button" onclick="location.href='/_V_01_war_exploded/board/view.jsp?board_id=<%=boardId%>'">취소</button>
+    <button type="button" onclick="location.href='/_V_01_war_exploded/board/view.jsp?board_id=<%=boardId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>'">취소</button>
     <button type="button" onclick="validCheck()">저장</button>
 </form>
 

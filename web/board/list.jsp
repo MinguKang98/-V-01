@@ -16,6 +16,8 @@
 <body>
 <%
     request.setCharacterEncoding("UTF-8");
+
+    // 검색조건
     String searchCreatedDateFrom = request.getParameter("searchCreatedDateFrom");
     String searchCreatedDateTo = request.getParameter("searchCreatedDateTo");
     String searchCategoryId = request.getParameter("searchCategory");
@@ -33,7 +35,7 @@
     <a href="/_V_01_war_exploded/board/list.jsp">Home</a>
 </div>
 <div>
-    <form method="get" name="searchForm" id="searchForm" action="list.jsp">
+    <form method="get" name="searchForm" id="searchForm" action="/_V_01_war_exploded/board/list.jsp">
         <label>등록일</label>
         <input type="date" name="searchCreatedDateFrom" id="searchCreatedDateFrom"/>
         <label> ~ </label>

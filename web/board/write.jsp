@@ -10,6 +10,8 @@
 
 <%
     request.setCharacterEncoding("UTF-8");
+
+    // 이전 검색조건
     String searchCreatedDateFrom = request.getParameter("searchCreatedDateFrom");
     String searchCreatedDateTo = request.getParameter("searchCreatedDateTo");
     String searchCategoryId = request.getParameter("searchCategory");
@@ -28,7 +30,7 @@
     <title>게시판 등록</title>
 </head>
 <body>
-<form method="post" name="writeForm" id="writeForm" action="writeProcess.jsp">
+<form method="post" name="writeForm" id="writeForm" action="writeProcess.jsp?searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>">
     <table>
         <tr>
             <th>카테고리</th>
