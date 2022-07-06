@@ -24,7 +24,13 @@
     Class.forName("org.mariadb.jdbc.Driver");
     con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
 
-    sql = "select * from board where board.board_id = "+boardId;
+    // 조회수 업데이트
+    sql = "update board set count = count + 1 where board_id = " + boardId;
+    pstmt = con.prepareStatement(sql);
+    pstmt.executeUpdate();
+
+    // 게시글 불러오기
+    sql = "select * from board where board.board_id = " + boardId;
     pstmt = con.prepareStatement(sql);
     rs = pstmt.executeQuery();
     rs.next();
@@ -87,5 +93,10 @@
         <button type="button" onclick="location.href='passwordConfirm.jsp?board_id=<%=boardId%>&type=modify'">수정</button>
         <button type="button" onclick="location.href='passwordConfirm.jsp?board_id=<%=boardId%>&type=delete'">삭제</button>
     </div>
+<%
+    rs.close();
+    pstmt.close();
+    con.close();
+%>
 </body>
 </html>
