@@ -116,17 +116,18 @@
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
         while (rs.next()) {
-            int board_id = rs.getInt("board_id");
+            int boardId = rs.getInt("board_id");
             int category_id = rs.getInt("category_id");
             boolean fileExist = rs.getBoolean("file_exist");
             String title = rs.getString("title");
             String user = rs.getString("user");
-            int count = rs.getInt("count");
+            int visitCount = rs.getInt("visit_count");
             String createdDate = dateFormat.format(rs.getTimestamp("created_date"));
             String updatedDate = "-";
             if (rs.getTimestamp("updated_date") != null) {
                 updatedDate = dateFormat.format(rs.getTimestamp("updated_date"));
             }
+            int commentCount = rs.getInt("comment_count");
 
             // 제목 80자 이상일시 '...' 로 축약
             if (title.length() > 80) {
@@ -138,11 +139,13 @@
         </td>
         <td><%=fileExist%>
         </td>
-        <td><a href="view.jsp?board_id=<%=board_id%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>"><%=title%>
-        </a></td>
+        <td>
+            <a href="view.jsp?board_id=<%=boardId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>">
+                <%=title%> (<%=commentCount%>)
+            </a></td>
         <td><%=user%>
         </td>
-        <td><%=count%>
+        <td><%=visitCount%>
         </td>
         <td><%=createdDate%>
         </td>
@@ -158,7 +161,10 @@
 <!--페이징징징-->
 
 <div>
-    <button type="button" onclick="location.href='write.jsp?searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>'">등록</button>
+    <button type="button"
+            onclick="location.href='write.jsp?searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>'">
+        등록
+    </button>
 </div>
 <%
     rs.close();
@@ -193,15 +199,14 @@
     }
 
     // 값이 있으면 카테고리 value 반환
-    if(<%=searchCategoryIdIsNullOrEmpty || searchCategoryId.equals("0")%>) {
+    if (<%=searchCategoryIdIsNullOrEmpty || searchCategoryId.equals("0")%>) {
         searchCategory.options[0].selected = "selected";
-    }
-    else{
+    } else {
         searchCategory.options[<%=searchCategoryId%>].selected = "selected";
     }
 
     // 값이 있으면 text value 반환
-    if(!<%=searchTextIsNullOrEmpty%>) {
+    if (!<%=searchTextIsNullOrEmpty%>) {
         searchText.value = "<%=searchText%>";
     }
 </script>

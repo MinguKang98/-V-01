@@ -31,7 +31,7 @@
     String title = rs.getString("title");
     String user = rs.getString("user");
     String password = rs.getString("password");
-    int count = rs.getInt("count");
+    int visitCount = rs.getInt("visit_count");
     String createdDate = dateFormat.format(rs.getTimestamp("created_date"));
     String updatedDate = "-";
     if (rs.getTimestamp("updated_date") != null) {
@@ -74,7 +74,7 @@
         <tr>
             <th>조회수</th>
             <td>
-                <span name="count" id="count"><%=count%></span>
+                <span name="count" id="count"><%=visitCount%></span>
             </td>
         </tr>
         <tr>

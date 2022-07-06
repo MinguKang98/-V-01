@@ -25,7 +25,7 @@
     con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
 
     // 조회수 업데이트
-    sql = "update board set count = count + 1 where board_id = " + boardId;
+    sql = "update board set visit_count = visit_count + 1 where board_id = " + boardId;
     pstmt = con.prepareStatement(sql);
     pstmt.executeUpdate();
 
@@ -40,7 +40,7 @@
     boolean fileExist = rs.getBoolean("file_exist");
     String title = rs.getString("title");
     String user = rs.getString("user");
-    int count = rs.getInt("count");
+    int visitCount = rs.getInt("visit_count");
     String createdDate = dateFormat.format(rs.getTimestamp("created_date"));
     String updatedDate = "-";
     if (rs.getTimestamp("updated_date") != null) {
@@ -72,7 +72,7 @@
             </div>
             <div>
                 <h2>[<%=categoryName%>]    <%=title%></h2>
-                <span>조회수: <%=count%></span>
+                <span>조회수: <%=visitCount%></span>
             </div>
         </div>
 
@@ -84,8 +84,26 @@
 
     <!--댓글-->
     <div>
-        <div>댓글1</div>
-        <div>댓글2</div>
+        <%
+            sql = "select * from comment where board_id = " + boardId;
+            pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()){
+                String commentCreatedDate = dateFormat.format(rs.getTimestamp("created_date"));
+                String comment = rs.getString("content");
+        %>
+        <div>
+            <div><%=commentCreatedDate%></div>
+            <div><%=comment%></div>
+        </div>
+        <%
+            }
+        %>
+        <form method="post" name="commentForm" id="commentForm" action="commentProcess.jsp?board_id=<%=boardId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>">
+            <input type="text" name="comment" id="comment" required placeholder="댓글을 입력해 주세요."/>
+            <button type="submit">등록</button>
+        </form>
     </div>
 
     <div>
