@@ -127,6 +127,11 @@
             if (rs.getTimestamp("updated_date") != null) {
                 updatedDate = dateFormat.format(rs.getTimestamp("updated_date"));
             }
+
+            // 제목 80자 이상일시 '...' 로 축약
+            if (title.length() > 80) {
+                title = title.substring(0, 80) + "...";
+            }
     %>
     <tr>
         <td><%=categoryMap.get(category_id)%>
