@@ -11,6 +11,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <html>
 <head>
+    <script src="https://kit.fontawesome.com/052e9eaead.js" crossorigin="anonymous"></script>
     <title>게시판 목록</title>
 </head>
 <body>
@@ -139,7 +140,7 @@
     <tr>
         <td><%=categoryMap.get(category_id)%>
         </td>
-        <td><%=fileExist%>
+        <td><%=(fileExist)?"<i class=\"fas fa-paperclip\"></i>\n":" "%>
         </td>
         <td>
             <a href="/_V_01_war_exploded/board/view.jsp?board_id=<%=boardId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>">
@@ -211,6 +212,7 @@
     if (!<%=searchTextIsNullOrEmpty%>) {
         searchText.value = "<%=searchText%>";
     }
+
 </script>
 </body>
 </html>
