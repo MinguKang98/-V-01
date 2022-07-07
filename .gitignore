@@ -6,3 +6,5 @@
 *.iml
 out
 gen
+
+web/resources/files
