@@ -30,7 +30,8 @@
     <title>게시판 등록</title>
 </head>
 <body>
-<form method="post" name="writeForm" id="writeForm" action="writeProcess.jsp?searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>">
+<form method="post" name="writeForm" id="writeForm" enctype="multipart/form-data"
+      action="writeProcess.jsp?searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>">
     <table>
         <tr>
             <th>카테고리</th>
@@ -88,9 +89,15 @@
         <tr>
             <th>파일첨부</th>
             <td>
-                <input type="file" name="file1" id="file1"/>
-                <input type="file" name="file2" id="file2"/>
-                <input type="file" name="file3" id="file3"/>
+                <div>
+                    <input type="file" name="file1" id="file1"/>
+                </div>
+                <div>
+                    <input type="file" name="file2" id="file2"/>
+                </div>
+                <div>
+                    <input type="file" name="file3" id="file3"/>
+                </div>
             </td>
         </tr>
     </table>
