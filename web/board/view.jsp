@@ -59,6 +59,7 @@
 %>
 <html>
 <head>
+    <script src="https://kit.fontawesome.com/052e9eaead.js" crossorigin="anonymous"></script>
     <title>게시글</title>
 </head>
 <body>
@@ -82,6 +83,23 @@
         <div>
             <p><%=content%></p>
         </div>
+
+        <%--첨부파일--%>
+        <%
+            sql = "select * from file where board_id = " + boardId;
+            pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()){
+                int fileId = rs.getInt("file_id");
+                String originalFileName = rs.getString("original_file_name");
+        %>
+        <div><i class="fas fa-download"></i>
+            <a href="/_V_01_war_exploded/board/fileDownloadProcess.jsp?file_id=<%=fileId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>"><%=originalFileName%></a>
+        </div>
+        <%
+            }
+        %>
     </div>
 
     <!--댓글-->
