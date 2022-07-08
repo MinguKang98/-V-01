@@ -95,7 +95,7 @@
                 String originalFileName = rs.getString("original_file_name");
         %>
         <div><i class="fas fa-download"></i>
-            <a href="/_V_01_war_exploded/board/fileDownloadProcess.jsp?file_id=<%=fileId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>"><%=originalFileName%></a>
+            <a href="/_V_01_war_exploded/board/fileDownloadProcess.jsp?file_id=<%=fileId%>&type=view&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>"><%=originalFileName%></a>
         </div>
         <%
             }
