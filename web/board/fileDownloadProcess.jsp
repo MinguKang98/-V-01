@@ -20,6 +20,8 @@
     String searchCategoryId = request.getParameter("searchCategory");
     String searchText = request.getParameter("searchText");
 
+    String type = request.getParameter("type");
+
     Connection con = null;
     PreparedStatement pstmt = null;
     ResultSet rs = null;
@@ -65,6 +67,14 @@
     in.close();
 
     //redirect
-    response.sendRedirect("view.jsp?board_id=" + boardId + "searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo
-            + "&searchCategory=" + searchCategoryId + "&searchText=" + searchText);
+    if (type.equals("view")) {
+        response.sendRedirect("view.jsp?board_id=" + boardId + "searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo
+                + "&searchCategory=" + searchCategoryId + "&searchText=" + searchText);
+    }
+
+    if (type.equals("modify")) {
+        response.sendRedirect("modify.jsp?board_id=" + boardId + "searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo
+                + "&searchCategory=" + searchCategoryId + "&searchText=" + searchText);
+    }
+
 %>
