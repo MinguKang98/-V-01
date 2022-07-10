@@ -19,44 +19,91 @@
     String searchText = request.getParameter("searchText");
 
     Connection con = null;
+
+    try {
+        Class.forName("org.mariadb.jdbc.Driver");
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+    con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
+
+    // 게시글
     PreparedStatement pstmt = null;
     ResultSet rs = null;
     String sql = null;
 
-    Class.forName("org.mariadb.jdbc.Driver");
-    con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
-
-    sql = "select * from board where board.board_id = "+boardId;
-    pstmt = con.prepareStatement(sql);
-    rs = pstmt.executeQuery();
-    rs.next();
-
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-    int categoryId = rs.getInt("category_id");
-    boolean fileExist = rs.getBoolean("file_exist");
-    String title = rs.getString("title");
-    String user = rs.getString("user");
-    int visitCount = rs.getInt("visit_count");
-    String createdDate = dateFormat.format(rs.getTimestamp("created_date"));
+    int categoryId = 0;
+    boolean fileExist;
+    String title = null;
+    String user = null;
+    int visitCount = 0;
+    String createdDate = null;
     String updatedDate = "-";
-    if (rs.getTimestamp("updated_date") != null) {
-        updatedDate = dateFormat.format(rs.getTimestamp("updated_date"));
+    String content = null;
+    try {
+        sql = "select * from board where board.board_id = " + boardId;
+        pstmt = con.prepareStatement(sql);
+        rs = pstmt.executeQuery();
+        if (rs.next()) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+            categoryId = rs.getInt("category_id");
+            fileExist = rs.getBoolean("file_exist");
+            title = rs.getString("title");
+            user = rs.getString("user");
+            visitCount = rs.getInt("visit_count");
+            createdDate = dateFormat.format(rs.getTimestamp("created_date"));
+            if (rs.getTimestamp("updated_date") != null) {
+                updatedDate = dateFormat.format(rs.getTimestamp("updated_date"));
+            }
+            content = rs.getString("content");
+        }
+    } catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
-    String content = rs.getString("content");
 
-    sql = "select name FROM category where category_id = " + categoryId;
-    pstmt = con.prepareStatement(sql);
-    rs = pstmt.executeQuery();
-    rs.next();
-
-    String categoryName = rs.getString("name");
+    // 카테고리
+    String categoryName = null;
+    try {
+        sql = "select name FROM category where category_id = " + categoryId;
+        pstmt = con.prepareStatement(sql);
+        rs = pstmt.executeQuery();
+        if (rs.next()) {
+            categoryName = rs.getString("name");
+        }
+    } catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 %>
 <html>
 <head>
+    <script src="https://kit.fontawesome.com/052e9eaead.js" crossorigin="anonymous"></script>
     <title>게시판 수정</title>
 </head>
 <body>
-<form method="post" name="modifyForm" id="modifyForm" action="/_V_01_war_exploded/board/modifyProcess.jsp?board_id=<%=boardId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>">
+<form method="post" name="modifyForm" id="modifyForm"
+      action="/_V_01_war_exploded/board/modifyProcess.jsp?board_id=<%=boardId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>">
     <table>
         <tr>
             <th>카테고리</th>
@@ -113,16 +160,64 @@
         <tr>
             <th>파일첨부</th>
             <td>
-                <input type="file" name="file1" id="file1"/>
-                <input type="file" name="file2" id="file2"/>
-                <input type="file" name="file3" id="file3"/>
+<%
+    // 첨부파일
+    try {
+        sql = "select * FROM file where board_id = " + boardId;
+        pstmt = con.prepareStatement(sql);
+        rs = pstmt.executeQuery();
+
+        for (int i = 1; i <= 3; i++) {
+            if(rs.next()){
+                String originalFileName = rs.getString("original_file_name");
+                String systemFileName = rs.getString("system_file_name");
+                int fileId = rs.getInt("file_id");
+%>
+                <div>
+                    <i class="fas fa-paperclip"></i><span> <%=originalFileName%> </span>
+                    <button type="button" onclick="location.href='/_V_01_war_exploded/board/fileDownloadProcess.jsp?file_id=<%=fileId%>&type=modify&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>'">
+                        Download</button>
+                    <button type="button" id="deleteButton<%=i%>" onclick="deleteFile(this.id)">X</button>
+                </div>
+<%
+         }else{
+%>
+                <div>
+                    <input type="file" />
+                </div>
+<%
+            }
+        }
+    } catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+    }
+%>
             </td>
         </tr>
     </table>
     <button type="button" onclick="location.href='/_V_01_war_exploded/board/view.jsp?board_id=<%=boardId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>'">취소</button>
     <button type="button" onclick="validCheck()">저장</button>
 </form>
-
+<%
+    try {
+        if (con != null) {
+            con.close();
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+%>
 <script>
     function validCheck() {
         var user = document.getElementById("user");
@@ -139,6 +234,20 @@
             userWarning.style.color = "red";
             user.focus();
             return false;
+        }
+
+        //비밀번호 검증
+        var passwordWarning = document.getElementById("passwordWarning");
+        var regExp = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{4,15}$/;
+
+        if (regExp.test(password.value) != true) {
+            passwordWarning.innerText = "4글자 이상, 16글자 미만인 영문/숫자/특수문자의 조합";
+            passwordWarning.style.color = "red";
+            password.focus();
+            return false;
+        }
+        else{
+            passwordWarning.innerText = "";
         }
 
         // 제목 검증
@@ -166,6 +275,10 @@
         }
 
         document.modifyForm.submit();
+    }
+
+    function deleteFile(id){
+        document.getElementById(id).parentNode.innerHTML = "<input type=\"file\" />";
     }
 </script>
 </body>

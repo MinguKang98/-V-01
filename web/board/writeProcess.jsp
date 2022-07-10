@@ -24,16 +24,17 @@
     String searchText = request.getParameter("searchText");
 
     // MultipartRequest 객체
-    String downloadLocation = "C:\\Users\\alsrn\\Desktop\\Coding\\게시판\\게시판 V-01\\web\\resources\\files";
+    String downloadLocation = "C:\\Users\\alsrn\\Desktop\\Coding\\게시판\\게시판 V-01\\web\\resources\\files"; //java의 file 경로 구분자
     int maxSize = 1024 * 1024 * 5;
     MultipartRequest multi = new MultipartRequest(request, downloadLocation, maxSize, "utf-8", new DefaultFileRenamePolicy());
 
     Connection con = null;
-    PreparedStatement pstmt = null;
-    ResultSet rs = null;
-    String sql = null;
 
-    Class.forName("org.mariadb.jdbc.Driver");
+    try {
+        Class.forName("org.mariadb.jdbc.Driver");
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+    }
     con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
 
     String categoryID = multi.getParameter("category");
@@ -48,7 +49,7 @@
 
     // 유효성 검사
     // 카테고리
-    if (categoryID.equals("0")) {
+    if (categoryID.equals("0")) { // 순서 바꾸기 -> null exception 회피
         response.sendRedirect("write.jsp");
         return;
     }
@@ -83,41 +84,80 @@
     String salt = Salt.getSalt();
     String encryptPassword = SHA256.encryptSHA256(password, salt);
 
-    // board DB 저장
-    sql = "INSERT INTO board(created_date,user,password,title,content,category_id,file_exist,salt)" +
-            "VALUES (?,?,?,?,?,?,?,?);";
-    pstmt = con.prepareStatement(sql);
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    String sql = null;
 
-    Timestamp createDate = new Timestamp(System.currentTimeMillis());
-    pstmt.setTimestamp(1, createDate);
-    pstmt.setString(2, user);
-    pstmt.setString(3, encryptPassword);
-    pstmt.setString(4, title);
-    pstmt.setString(5, content);
-    pstmt.setInt(6, Integer.parseInt(categoryID));
-    // file_exist
-    int fileExist = 0;
-    for (String file : fileArray) {
-        if (file != "") {
-            fileExist = 1;
-            break;
+    // board DB 저장
+    try {
+        sql = "INSERT INTO board(created_date,user,password,title,content,category_id,file_exist,salt)" +
+                "VALUES (?,?,?,?,?,?,?,?);";
+        pstmt = con.prepareStatement(sql);
+
+        Timestamp createDate = new Timestamp(System.currentTimeMillis());
+        pstmt.setTimestamp(1, createDate);
+        pstmt.setString(2, user);
+        pstmt.setString(3, encryptPassword);
+        pstmt.setString(4, title);
+        pstmt.setString(5, content);
+        pstmt.setInt(6, Integer.parseInt(categoryID));
+        // file_exist
+        int fileExist = 0;
+        Enumeration fileCheck = multi.getFileNames();
+
+        while (fileCheck.hasMoreElements()) {
+            String element = (String) fileCheck.nextElement();
+
+            // null이 아니면 파일 존재
+            if (multi.getOriginalFileName(element) != null) {
+                fileExist = 1;
+                break;
+            }
+        }
+
+        pstmt.setInt(7, fileExist);
+        pstmt.setString(8, salt);
+
+        pstmt.executeUpdate();
+    } catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
-    pstmt.setInt(7, fileExist);
-    pstmt.setString(8, salt);
-
-    pstmt.executeUpdate();
 
 
     // file 업로드
 
-    sql = "select LAST_INSERT_ID()";
-    pstmt = con.prepareStatement(sql);
-    rs = pstmt.executeQuery();
+    // 저장한 게시판 id
     int boardId = 0;
-    if (rs.next()) {
-        boardId = rs.getInt("LAST_INSERT_ID()");
+    try {
+        sql = "select LAST_INSERT_ID()";
+        pstmt = con.prepareStatement(sql);
+        rs = pstmt.executeQuery();
+        if (rs.next()) {
+            boardId = rs.getInt("LAST_INSERT_ID()");
+        }
+    } catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
 
     Enumeration files = multi.getFileNames();
 
@@ -129,21 +169,37 @@
 
         // null이 아니면 db 저장
         if (originalFileName != null) {
-            sql = "INSERT INTO file(original_file_name,system_file_name,board_id)" +
-                    "VALUES (?,?,?);";
-            pstmt = con.prepareStatement(sql);
+            try {
+                sql = "INSERT INTO file(original_file_name,system_file_name,board_id)" +
+                        "VALUES (?,?,?);";
+                pstmt = con.prepareStatement(sql);
 
-            pstmt.setString(1,originalFileName);
-            pstmt.setString(2, filesystemName);
-            pstmt.setInt(3, boardId);
+                pstmt.setString(1, originalFileName);
+                pstmt.setString(2, filesystemName);
+                pstmt.setInt(3, boardId);
 
-            pstmt.executeUpdate();
+                pstmt.executeUpdate();
+            } catch (SQLException e){
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (pstmt != null) {
+                        pstmt.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
-    rs.close();
-    pstmt.close();
-    con.close();
+    try {
+        if (con != null) {
+            con.close();
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
 
     //redirect
     response.sendRedirect("list.jsp?searchCreatedDateFrom="+searchCreatedDateFrom+"&searchCreatedDateTo="+searchCreatedDateTo

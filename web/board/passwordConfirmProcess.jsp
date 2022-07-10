@@ -22,22 +22,43 @@
     String searchText = request.getParameter("searchText");
 
     Connection con = null;
-    PreparedStatement pstmt = null;
-    String sql = null;
-    ResultSet rs = null;
-
-    Class.forName("org.mariadb.jdbc.Driver");
+    try {
+        Class.forName("org.mariadb.jdbc.Driver");
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+    }
     con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
 
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    String sql = null;
 
-    sql = "select password, salt from board where board.board_id = "+boardId;
-    pstmt = con.prepareStatement(sql);
-    rs = pstmt.executeQuery();
-    rs.next();
-
-    String salt = rs.getString("salt");
-    String originPassword = rs.getString("password"); // DB 저장 비밀번호
-    String encryptPassword = SHA256.encryptSHA256(inputPassword, salt); // 암호화한 입력 비밀번호
+    String salt = null;
+    String originPassword = null;
+    String encryptPassword = null;
+    try {
+        sql = "select password, salt from board where board.board_id = "+boardId;
+        pstmt = con.prepareStatement(sql);
+        rs = pstmt.executeQuery();
+        if (rs.next()) {
+            salt = rs.getString("salt");
+            originPassword = rs.getString("password"); // DB 저장 비밀번호
+            encryptPassword = SHA256.encryptSHA256(inputPassword, salt); // 암호화한 입력 비밀번호
+        }
+    } catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     if (encryptPassword.equals(originPassword)) {
         // 같으면 type 에 따라 다음 프로세스로
@@ -59,5 +80,14 @@
                 + "&confirm=fail&searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo
                 + "&searchCategory=" + searchCategoryId + "&searchText=" + searchText);
 
+    }
+
+
+    try {
+        if (con != null) {
+            con.close();
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
 %>

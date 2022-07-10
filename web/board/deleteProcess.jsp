@@ -19,17 +19,42 @@
     String searchText = request.getParameter("searchText");
 
     Connection con = null;
+    try {
+        Class.forName("org.mariadb.jdbc.Driver");
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+    con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
+
     PreparedStatement pstmt = null;
     String sql = null;
 
-    Class.forName("org.mariadb.jdbc.Driver");
-    con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
-
     // board delete
-    sql = "delete from board where board_id=" + boardId;
-    pstmt = con.prepareStatement(sql);
+    try {
+        sql = "delete from board where board_id=" + boardId;
+        pstmt = con.prepareStatement(sql);
 
-    pstmt.executeUpdate();
+        pstmt.executeUpdate();
+    } catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    try {
+        if (con != null) {
+            con.close();
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
 
     // redirect
     response.sendRedirect("list.jsp?searchCreatedDateFrom=" + searchCreatedDateFrom + "&searchCreatedDateTo=" + searchCreatedDateTo

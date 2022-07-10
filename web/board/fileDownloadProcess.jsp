@@ -23,24 +23,43 @@
     String type = request.getParameter("type");
 
     Connection con = null;
+    try {
+        Class.forName("org.mariadb.jdbc.Driver");
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+    con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
+
     PreparedStatement pstmt = null;
     ResultSet rs = null;
     String sql = null;
 
-    Class.forName("org.mariadb.jdbc.Driver");
-    con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
-
-    sql = "select * from file where file_id = " + fileId;
-    pstmt = con.prepareStatement(sql);
-    rs = pstmt.executeQuery();
-
-    String originalFileName = "";
-    String systemFileName = "";
+    String originalFileName = null;
+    String systemFileName = null;
     int boardId = 0;
-    if (rs.next()) {
-        originalFileName = rs.getString("original_file_name");
-        systemFileName = rs.getString("system_file_name");
-        boardId = rs.getInt("board_id");
+    try {
+        sql = "select * from file where file_id = " + fileId;
+        pstmt = con.prepareStatement(sql);
+        rs = pstmt.executeQuery();
+
+        if (rs.next()) {
+            originalFileName = rs.getString("original_file_name");
+            systemFileName = rs.getString("system_file_name");
+            boardId = rs.getInt("board_id");
+        }
+    } catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     String downLoadFile = "C:\\Users\\alsrn\\Desktop\\Coding\\게시판\\게시판 V-01\\web\\resources\\files\\" + systemFileName;
@@ -65,6 +84,14 @@
     os.flush();
     os.close();
     in.close();
+
+    try {
+        if (con != null) {
+            con.close();
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
 
     //redirect
     if (type.equals("view")) {

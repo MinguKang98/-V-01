@@ -18,11 +18,11 @@
     String searchText = request.getParameter("searchText");
 
     Connection con = null;
-    PreparedStatement pstmt = null;
-    ResultSet rs = null;
-    String sql = null;
-
-    Class.forName("org.mariadb.jdbc.Driver");
+    try {
+        Class.forName("org.mariadb.jdbc.Driver");
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+    }
     con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
 %>
 <html>
@@ -38,20 +38,39 @@
             <td>
                 <select name="category" id="category">
                     <option value="0" selected>카테고리 선택</option>
-                    <%
-                        sql = "select * from category";
-                        pstmt = con.prepareStatement(sql);
-                        rs = pstmt.executeQuery();
+<%
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    String sql = null;
 
-                        while (rs.next()) {
-                            int id = rs.getInt("category_id");
-                            String name = rs.getString("name");
-                    %>
+    try{
+        sql = "select * from category";
+        pstmt = con.prepareStatement(sql);
+        rs = pstmt.executeQuery();
+
+        while (rs.next()) {
+            int id = rs.getInt("category_id");
+            String name = rs.getString("name");
+%>
                     <option value="<%=id%>"><%=name%>
                     </option>
-                    <%
-                        }
-                    %>
+<%
+        }
+    } catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+%>
                 </select>
                 <span id="categoryWarning"></span>
             </td>
@@ -104,7 +123,15 @@
     <button type="button" onclick="location.href='list.jsp?searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>'">취소</button>
     <button type="button" onclick="validCheck()">저장</button>
 </form>
-
+<%
+    try {
+        if (con != null) {
+            con.close();
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+%>
 <script>
     <!-- 유효성 검사 -->
     function validCheck() {

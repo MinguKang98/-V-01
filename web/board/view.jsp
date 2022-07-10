@@ -19,43 +19,87 @@
     String searchText = request.getParameter("searchText");
 
     Connection con = null;
+
+    try {
+        Class.forName("org.mariadb.jdbc.Driver");
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+    con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
+
     PreparedStatement pstmt = null;
     ResultSet rs = null;
     String sql = null;
 
-    Class.forName("org.mariadb.jdbc.Driver");
-    con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
-
     // 조회수 업데이트
-    sql = "update board set visit_count = visit_count + 1 where board_id = " + boardId;
-    pstmt = con.prepareStatement(sql);
-    pstmt.executeUpdate();
+    try{
+        sql = "update board set visit_count = visit_count + 1 where board_id = " + boardId;
+        pstmt = con.prepareStatement(sql);
+        pstmt.executeUpdate();
+    } catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // 게시글 불러오기
-    sql = "select * from board where board.board_id = " + boardId;
-    pstmt = con.prepareStatement(sql);
-    rs = pstmt.executeQuery();
-    rs.next();
-
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-    int categoryId = rs.getInt("category_id");
-    boolean fileExist = rs.getBoolean("file_exist");
-    String title = rs.getString("title");
-    String user = rs.getString("user");
-    int visitCount = rs.getInt("visit_count");
-    String createdDate = dateFormat.format(rs.getTimestamp("created_date"));
+
+    int categoryId = 0;
+    boolean fileExist;
+    String title = null;
+    String user = null;
+    int visitCount = 0;
+    String createdDate = null;
     String updatedDate = "-";
-    if (rs.getTimestamp("updated_date") != null) {
-        updatedDate = dateFormat.format(rs.getTimestamp("updated_date"));
+    String content = null;
+    try {
+        sql = "select * from board where board.board_id = " + boardId;
+        pstmt = con.prepareStatement(sql);
+        rs = pstmt.executeQuery();
+        rs.next();
+
+        categoryId = rs.getInt("category_id");
+        fileExist = rs.getBoolean("file_exist");
+        title = rs.getString("title");
+        user = rs.getString("user");
+        visitCount = rs.getInt("visit_count");
+        createdDate = dateFormat.format(rs.getTimestamp("created_date"));
+        if (rs.getTimestamp("updated_date") != null) {
+            updatedDate = dateFormat.format(rs.getTimestamp("updated_date"));
+        }
+        content = rs.getString("content");
+    } catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
-    String content = rs.getString("content");
 
-    sql = "select name FROM category where category_id = " + categoryId;
-    pstmt = con.prepareStatement(sql);
-    rs = pstmt.executeQuery();
-    rs.next();
+    // 댓글 불러오기
+    String categoryName = null;
+    try{
+        sql = "select name FROM category where category_id = " + categoryId;
+        pstmt = con.prepareStatement(sql);
+        rs = pstmt.executeQuery();
+        if(rs.next()){
 
-    String categoryName = rs.getString("name");
+            categoryName = rs.getString("name");
 %>
 <html>
 <head>
@@ -85,41 +129,89 @@
         </div>
 
         <%--첨부파일--%>
-        <%
-            sql = "select * from file where board_id = " + boardId;
-            pstmt = con.prepareStatement(sql);
-            rs = pstmt.executeQuery();
+<%
+        }
+    } catch (SQLException e){
+            e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-            while (rs.next()){
-                int fileId = rs.getInt("file_id");
-                String originalFileName = rs.getString("original_file_name");
-        %>
+    // 첨부파일 불러오기
+    try{
+        sql = "select * from file where board_id = " + boardId;
+        pstmt = con.prepareStatement(sql);
+        rs = pstmt.executeQuery();
+
+        while (rs.next()){
+            int fileId = rs.getInt("file_id");
+            String originalFileName = rs.getString("original_file_name");
+%>
         <div><i class="fas fa-download"></i>
             <a href="/_V_01_war_exploded/board/fileDownloadProcess.jsp?file_id=<%=fileId%>&type=view&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>"><%=originalFileName%></a>
         </div>
-        <%
+<%
+        }
+    }  catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) {
+                rs.close();
             }
-        %>
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+%>
     </div>
 
     <!--댓글-->
     <div>
-        <%
-            sql = "select * from comment where board_id = " + boardId;
-            pstmt = con.prepareStatement(sql);
-            rs = pstmt.executeQuery();
+<%
+    // 댓글 불러오기
+    try {
+        sql = "select * from comment where board_id = " + boardId;
+        pstmt = con.prepareStatement(sql);
+        rs = pstmt.executeQuery();
 
-            while (rs.next()){
-                String commentCreatedDate = dateFormat.format(rs.getTimestamp("created_date"));
-                String comment = rs.getString("content");
-        %>
+        while (rs.next()){
+            String commentCreatedDate = dateFormat.format(rs.getTimestamp("created_date"));
+            String comment = rs.getString("content");
+%>
         <div>
             <div><%=commentCreatedDate%></div>
             <div><%=comment%></div>
         </div>
-        <%
+<%
+        }
+    }  catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) {
+                rs.close();
             }
-        %>
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+%>
         <form method="post" name="commentForm" id="commentForm" action="/_V_01_war_exploded/board/commentProcess.jsp?board_id=<%=boardId%>&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>">
             <input type="text" name="comment" id="comment" required placeholder="댓글을 입력해 주세요."/>
             <button type="submit">등록</button>
@@ -132,9 +224,13 @@
         <button type="button" onclick="location.href='passwordConfirm.jsp?board_id=<%=boardId%>&type=delete&searchCreatedDateFrom=<%=searchCreatedDateFrom%>&searchCreatedDateTo=<%=searchCreatedDateTo%>&searchCategory=<%=searchCategoryId%>&searchText=<%=searchText%>'">삭제</button>
     </div>
 <%
-    rs.close();
-    pstmt.close();
-    con.close();
+    try {
+        if (con != null) {
+            con.close();
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
 %>
 </body>
 </html>

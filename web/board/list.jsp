@@ -25,12 +25,15 @@
     String searchText = request.getParameter("searchText");
 
     Connection con = null;
-    PreparedStatement pstmt = null;
-    ResultSet rs = null;
-    String sql = null;
 
-    Class.forName("org.mariadb.jdbc.Driver");
+    // DB 연결
+    try {
+        Class.forName("org.mariadb.jdbc.Driver");
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+    }
     con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/board_v1", "mingu", "1234");
+
 %>
 <div>
     <a href="/_V_01_war_exploded/board/list.jsp">Home</a>
@@ -43,22 +46,42 @@
         <input type="date" name="searchCreatedDateTo" id="searchCreatedDateTo"/>
         <select name="searchCategory" id="searchCategory">
             <option value="0">전체 카테고리</option>
-            <%
-                sql = "select * from category";
-                pstmt = con.prepareStatement(sql);
-                rs = pstmt.executeQuery();
+<%
+    PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    String sql = null;
 
-                HashMap<Integer, String> categoryMap = new HashMap<>();
-                while (rs.next()) {
-                    int id = rs.getInt("category_id");
-                    String name = rs.getString("name");
-                    categoryMap.put(id, name);
-            %>
+    HashMap<Integer, String> categoryMap = new HashMap<>();
+
+    try{
+        sql = "select * from category";
+        pstmt = con.prepareStatement(sql);
+        rs = pstmt.executeQuery();
+
+        while (rs.next()) {
+            int id = rs.getInt("category_id");
+            String name = rs.getString("name");
+            categoryMap.put(id, name);
+%>
             <option value="<%=id%>"><%=name%>
             </option>
-            <%
-                }
-            %>
+<%
+        }
+    } catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+%>
         </select>
         <input type="text" name="searchText" id="searchText" placeholder="검색어를 입력해 주세요. (제목+작성자+내용)"/>
         <button type="submit">검색</button>
@@ -66,14 +89,33 @@
 </div>
 
 <div>
-    <%
+<%
+    try{
         sql = "select count(*) as count from board";
         pstmt = con.prepareStatement(sql);
         rs = pstmt.executeQuery();
-        rs.next();
-        int totalBoardNum = rs.getInt("count");
-    %>
+
+        if (rs.next()) {
+            int totalBoardNum = rs.getInt("count");
+%>
     <label>총 <%=totalBoardNum%>건</label>
+<%
+        }
+    } catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+%>
 </div>
 <table>
     <thead>
@@ -88,33 +130,38 @@
     </tr>
     </thead>
     <tbody>
-    <%!
-        public boolean isNullOrEmpty(String str) {
-            return (str == null || str.equals("") || str.equals("null"));
-        }
-    %>
-    <%
-        boolean searchCreatedDateFromIsNullOrEmpty = isNullOrEmpty(searchCreatedDateFrom);
-        boolean searchCreatedDateToIsNullOrEmpty = isNullOrEmpty(searchCreatedDateTo);
-        boolean searchCategoryIdIsNullOrEmpty = isNullOrEmpty(searchCategoryId);
-        boolean searchTextIsNullOrEmpty = isNullOrEmpty(searchText);
+<%!
+    public boolean isNullOrEmpty(String str) {
+        return (str == null || str.equals("") || str.equals("null"));
+    }
+%>
+<%
+    boolean searchCreatedDateFromIsNullOrEmpty = isNullOrEmpty(searchCreatedDateFrom);
+    boolean searchCreatedDateToIsNullOrEmpty = isNullOrEmpty(searchCreatedDateTo);
+    boolean searchCategoryIdIsNullOrEmpty = isNullOrEmpty(searchCategoryId);
+    boolean searchTextIsNullOrEmpty = isNullOrEmpty(searchText);
 
-        // 등록일 조건
-        String searchDateQuery = (searchCreatedDateFromIsNullOrEmpty || searchCreatedDateToIsNullOrEmpty)
-                ? "" : String.format("where (date(created_date) between \"%s\" and \"%s\")", searchCreatedDateFrom, searchCreatedDateTo);
+    // 등록일 조건
+    String searchDateQuery = (searchCreatedDateFromIsNullOrEmpty || searchCreatedDateToIsNullOrEmpty)
+            ? "" : String.format("where (date(created_date) between \"%s\" and \"%s\")", searchCreatedDateFrom, searchCreatedDateTo);
 
-        // 카테고리 조건
-        String searchCategoryQuery = (searchCategoryIdIsNullOrEmpty || searchCategoryId.equals("0")) ?
-                "" : String.format(" and category_id = %s", searchCategoryId);
+    // 카테고리 조건
+    String searchCategoryQuery = (searchCategoryIdIsNullOrEmpty || searchCategoryId.equals("0")) ?
+            "" : String.format(" and category_id = %s", searchCategoryId);
 
-        // 검색어 조건
-        String likeQuery = " and (user like \'%" + searchText + "%\' or title like \'%" + searchText + "%\' or content like \'%" + searchText + "%\')";
-        String searchTextQuery = (searchTextIsNullOrEmpty) ?
-                "" : likeQuery;
+    // 검색어 조건
+    String likeQuery = " and (user like \'%" + searchText + "%\' or title like \'%" + searchText + "%\' or content like \'%" + searchText + "%\')";
+    String searchTextQuery = (searchTextIsNullOrEmpty) ?
+            "" : likeQuery;
 
+    try{
         sql = "select * from board " + searchDateQuery + searchCategoryQuery + searchTextQuery;
+        // SQL injectino에 취약 -> ?를 사용한 prepareStatemet 를 사용하자
         System.out.println(sql);
         pstmt = con.prepareStatement(sql);
+        pstmt.setString(1, searchDateQuery);
+        pstmt.setString(2, searchCategoryQuery);
+        pstmt.setString(3, searchTextQuery);
         rs = pstmt.executeQuery();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
@@ -136,7 +183,7 @@
             if (title.length() > 80) {
                 title = title.substring(0, 80) + "...";
             }
-    %>
+%>
     <tr>
         <td><%=categoryMap.get(category_id)%>
         </td>
@@ -155,9 +202,23 @@
         <td><%=updatedDate%>
         </td>
     </tr>
-    <%
+<%
         }
-    %>
+    } catch (SQLException e){
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) {
+                rs.close();
+            }
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+%>
     </tbody>
 </table>
 
@@ -170,9 +231,13 @@
     </button>
 </div>
 <%
-    rs.close();
-    pstmt.close();
-    con.close();
+    try {
+        if (con != null) {
+            con.close();
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
 %>
 <script>
     function getDate() {
